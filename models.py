@@ -56,4 +56,24 @@ class RecipeListing(db.Model, SerializerMixin):
 
     def _repr_(self):
         return f'Recipe: {self.name}, Ingredients: {self.ingredients}, Instructions: {self.instructions}, Diet: {self.dietary_type}'
+
+
+class RecipeReview(db.Model, SerializerMixin):
+    __tablename__='recipe_reviews'
+
+    serialize_rules = ("-user.recipe_reviews", "-recipe_listing.recipe_reviews",)
+
+    id = db.Column(db.Integer, primary_key=True)
+    commentary = db.Column(db.String())
+    rating = db.Column(db.Integer())
+    date = db.Column(db.DateTime, default=datetime.now)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
+    recipe_listing_id = db.Column(db.Integer(), db.ForeignKey('recipe_listing.id'))
+
+
+    def _repr_(self):
+        return f'Rating: {self.rating}, Commentary: {self.commentary},'
     
+
+
+
