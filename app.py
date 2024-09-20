@@ -43,13 +43,15 @@ class Login(Resource):
         password = data.get('password')
 
         user = User.query.filter_by(email=email).first()
-        if user and user.password == password:
+        if user and user.check_password(password):
             session['person_id'] = user.id
             return make_response(jsonify(user.to_dict()), 200)
         else:
             return make_response(jsonify({"error": "Invalid Email or Password"}), 401)
 
 api.add_resource(Login, '/login', endpoint='login')
+
+
 
 class Signup(Resource):
     def post(self):
@@ -64,11 +66,8 @@ class Signup(Resource):
                 jsonify({"error": "Username or email already exists"}), 409
             )
 
-        new_user = User(
-            username=username,
-            email=email,
-            password=password
-        )
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
 

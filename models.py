@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 
@@ -15,13 +14,20 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer(), primary_key=True)
     email = db.Column(db.String, nullable=False, unique=True)
     username = db.Column(db.String, nullable=False)
-    password = db.Column(db.String, nullable=False)  # Change _password_hash to password
+    password = db.Column(db.String, nullable=False)
 
     recipe_reviews = db.relationship('RecipeReview', backref="user")
 
     def __repr__(self):
         return f'<User: {self.username}>'
 
+    def set_password(self, password):
+        """Hashes the password and stores it."""
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def check_password(self, password):
+        """Checks a password against the stored hash."""
+        return bcrypt.check_password_hash(self.password, password)
 
 class RecipeListing(db.Model, SerializerMixin):
     __tablename__ = "recipe_listing"
@@ -39,7 +45,6 @@ class RecipeListing(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Recipe: {self.name}, Ingredients: {self.ingredients}, Instructions: {self.instructions}, Diet: {self.dietary_type}'
-
 
 class RecipeReview(db.Model, SerializerMixin):
     __tablename__ = 'recipe_reviews'
