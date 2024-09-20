@@ -2,9 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
-
 from datetime import datetime
-
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -17,33 +15,18 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer(), primary_key=True)
     email = db.Column(db.String, nullable=False, unique=True)
     username = db.Column(db.String, nullable=False)
-    _password_hash = db.Column(db.String())
+    password = db.Column(db.String, nullable=False)  # Change _password_hash to password
 
     recipe_reviews = db.relationship('RecipeReview', backref="user")
 
-    def _repr_(self):
+    def __repr__(self):
         return f'<User: {self.username}>'
-    
 
-    @hybrid_property
-    def password_hash(self):
-        raise AttributeError ("Not Allowed")
-    
-
-    @password_hash.setter
-
-    def password_hash(self, password):
-        self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
-
-    def authenticate(self, password):
-        return bcrypt.check_password_hash(self._password_hash,password.encode("utf-8"))
-    
 
 class RecipeListing(db.Model, SerializerMixin):
-
     __tablename__ = "recipe_listing"
 
-    serialize_rules = ("-recipe_reviews.recipe_listing", )
+    serialize_rules = ("-recipe_reviews.recipe_listing",)
 
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(), nullable=False)
@@ -52,14 +35,14 @@ class RecipeListing(db.Model, SerializerMixin):
     instructions = db.Column(db.String(100))
     dietary_type = db.Column(db.String(), nullable=False)
 
-    recipe_reviews = db.relationship('RecipeReview', backref='reccipe_listing')
+    recipe_reviews = db.relationship('RecipeReview', backref='recipe_listing')
 
-    def _repr_(self):
+    def __repr__(self):
         return f'Recipe: {self.name}, Ingredients: {self.ingredients}, Instructions: {self.instructions}, Diet: {self.dietary_type}'
 
 
 class RecipeReview(db.Model, SerializerMixin):
-    __tablename__='recipe_reviews'
+    __tablename__ = 'recipe_reviews'
 
     serialize_rules = ("-user.recipe_reviews", "-recipe_listing.recipe_reviews",)
 
@@ -70,10 +53,5 @@ class RecipeReview(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
     recipe_listing_id = db.Column(db.Integer(), db.ForeignKey('recipe_listing.id'))
 
-
-    def _repr_(self):
-        return f'Rating: {self.rating}, Commentary: {self.commentary},'
-    
-
-
-
+    def __repr__(self):
+        return f'Rating: {self.rating}, Commentary: {self.commentary}'

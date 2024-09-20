@@ -13,7 +13,7 @@ def seed_users(num_users=10):
         username = fake.user_name()
         email = fake.unique.email()
         password = fake.password()
-        new_user = User(username=username, email=email, _password_hash=password)
+        new_user = User(username=username, email=email, password=password)
         users.append(new_user)
     db.session.bulk_save_objects(users)
     db.session.commit()
