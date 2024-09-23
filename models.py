@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime
 
 db = SQLAlchemy()
@@ -29,6 +30,7 @@ class User(db.Model, SerializerMixin):
         """Checks a password against the stored hash."""
         return bcrypt.check_password_hash(self.password, password)
 
+
 class RecipeListing(db.Model, SerializerMixin):
     __tablename__ = "recipe_listing"
 
@@ -44,7 +46,8 @@ class RecipeListing(db.Model, SerializerMixin):
     recipe_reviews = db.relationship('RecipeReview', backref='recipe_listing')
 
     def __repr__(self):
-        return f'Recipe: {self.name}, Ingredients: {self.ingredients}, Instructions: {self.instructions}, Diet: {self.dietary_type}'
+        return f'<Recipe: {self.name}, Ingredients: {self.ingredients}, Instructions: {self.instructions}, Diet: {self.dietary_type}>'
+
 
 class RecipeReview(db.Model, SerializerMixin):
     __tablename__ = 'recipe_reviews'
@@ -58,5 +61,10 @@ class RecipeReview(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
     recipe_listing_id = db.Column(db.Integer(), db.ForeignKey('recipe_listing.id'))
 
+    @hybrid_property
+    def recipe_name(self):
+        """Returns the name of the associated recipe."""
+        return self.recipe_listing.name
+
     def __repr__(self):
-        return f'Rating: {self.rating}, Commentary: {self.commentary}'
+        return f'<Review: Rating {self.rating}, Commentary: {self.commentary}, Recipe: {self.recipe_name}>'
