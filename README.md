@@ -109,7 +109,8 @@ Post a review for a recipe.
 
 Request Body:
 
-```{
+```
+{
   "user_id": 1,
   "recipe_listing_id": 2,
   "rating": 5,
@@ -122,7 +123,8 @@ Edit a review.
 
 Request Body:
 
-```{
+```
+{
   "user_id": 1,
   "rating": 4,
   "commentary": "Great but could be better"
