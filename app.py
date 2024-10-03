@@ -7,7 +7,9 @@ from models import db, User, RecipeListing, RecipeReview
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'zxcvbnm'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tom:password@localhost:5432/recipe_db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tom:password@localhost:5432/recipe_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tom:password@recipe-community-server-1.onrender.com:5432/recipe_db'
+
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
