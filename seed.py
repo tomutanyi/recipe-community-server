@@ -102,6 +102,13 @@ def seed_recipes():
             "instructions": "Heat oil in a pan, scramble the eggs, and set aside. In the same pan, add vegetables and stir-fry for 3-5 minutes. Add rice and soy sauce, stirring well. Mix in scrambled eggs and green onions.",
             "image_link": "https://res.cloudinary.com/dzpurt5ec/image/upload/v1727154202/recipe-community/11-recipes-small-size/34705_ouqsf9.jpg",
             "dietary_type": "Vegetarian"
+        },
+        {
+            "name": "Egg Fried Rice",
+            "ingredients": "2 cups cooked rice, 2 eggs, beaten, 1 cup mixed vegetables, 2 tbsp soy sauce, 2 green onions, sliced, 2 tbsp oil",
+            "instructions": "Heat oil in a pan, scramble the eggs, and set aside. In the same pan, add vegetables and stir-fry for 3-5 minutes. Add rice and soy sauce, stirring well. Mix in scrambled eggs and green onions.",
+            "image_link": "https://res.cloudinary.com/dzpurt5ec/image/upload/v1727154202/recipe-community/11-recipes-small-size/34705_ouqsf9.jpg",
+            "dietary_type": "Vegetarian"
         }
     ]
     
@@ -188,10 +195,16 @@ def seed_reviews():
         ("A refreshing blend that's perfect for breakfast.", 4),
     ]
 
+    # Assuming you have total_recipes set to the number of recipes you want to seed reviews for
+    total_recipes = 12  # Example value, replace with the actual count of recipes
     reviews = []
     for i, (commentary, rating) in enumerate(reviews_data):
         user_id = random.randint(1, 10)
         recipe_listing_id = (i // 4) + 1  # Assign 4 reviews per recipe
+        
+        if recipe_listing_id > total_recipes:
+            break
+        
         reviews.append(RecipeReview(
             commentary=commentary,
             rating=rating,
@@ -201,6 +214,7 @@ def seed_reviews():
 
     db.session.bulk_save_objects(reviews)
     db.session.commit()
+
 
 
 

@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime
+from sqlalchemy import String, Text
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -36,12 +37,12 @@ class RecipeListing(db.Model, SerializerMixin):
 
     serialize_rules = ("-recipe_reviews.recipe_listing",)
 
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    image_link = db.Column(db.String(255))
-    ingredients = db.Column(db.String(100))
-    instructions = db.Column(db.String(100))
-    dietary_type = db.Column(db.String(), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    image_link = db.Column(db.String(255))  # Increase the length
+    ingredients = db.Column(db.Text)  # Use Text if it can be long
+    instructions = db.Column(db.Text)  # Use Text for longer instructions
+    dietary_type = db.Column(db.String(50))
 
     recipe_reviews = db.relationship('RecipeReview', backref='recipe_listing')
 
